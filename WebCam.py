@@ -10,6 +10,8 @@ while True:
     # processing the data / frame
     frame = cv2.resize(frame,(640,480))
     frame = cv2.flip(frame,1)
+    # convert to grey scale
+    frame = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
 
     # show the frame / data / picture
     cv2.imshow("Webcam", frame)
