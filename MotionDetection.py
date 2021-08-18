@@ -11,7 +11,7 @@ for _ in range(10):
 background = cv2.resize(background, (1280, 720))
 background = cv2.flip(background, 1)
 background = cv2.cvtColor(background,cv2.COLOR_BGR2GRAY)
-background = cv2.GaussianBlur(background,(25,25),0)
+last_frame = cv2.GaussianBlur(background,(25,25),0)
 
 while True:
     # reading, resizing and fliping the frame
@@ -25,8 +25,9 @@ while True:
     # foreground = grey - background
 
     # _, mask = cv2.threshold(foreground, 127, 255, cv2.THRESH_BINARY)
-    absolute_diff = cv2.absdiff(grey,background)
-    _, mask = cv2.threshold(absolute_diff, 31, 255, cv2.THRESH_BINARY)
+    absolute_diff = cv2.absdiff(last_frame,grey)
+    last_frame = grey
+    _, mask = cv2.threshold(absolute_diff, 15, 255, cv2.THRESH_BINARY)
 
     cv2.imshow("Webcam",mask)
 
