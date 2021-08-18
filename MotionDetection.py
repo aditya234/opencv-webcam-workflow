@@ -20,9 +20,11 @@ while True:
 
     # processing the frame
     grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    foreground = grey - background
+    # foreground = grey - background
 
-    _, mask = cv2.threshold(foreground, 127, 255, cv2.THRESH_BINARY)
+    # _, mask = cv2.threshold(foreground, 127, 255, cv2.THRESH_BINARY)
+    absolute_diff = cv2.absdiff(grey,background)
+    _, mask = cv2.threshold(absolute_diff, 63, 255, cv2.THRESH_BINARY)
 
     cv2.imshow("Webcam",mask)
 
