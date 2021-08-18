@@ -7,10 +7,12 @@ cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
-logo = cv2.imread('logo.png')
+logo = cv2.imread('download.png')
 size = 100
 logo = cv2.resize(logo, (size, size))
 grey = cv2.cvtColor(logo, cv2.COLOR_BGR2GRAY)
+
+# masking - take all the color codes which are equal or above 1, and convert them to value 255
 _, mask = cv2.threshold(grey, 1, 255, cv2.THRESH_BINARY)
 
 while True:
