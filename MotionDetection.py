@@ -22,7 +22,9 @@ while True:
     grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     foreground = grey - background
 
-    cv2.imshow("Webcam",foreground)
+    _, mask = cv2.threshold(foreground, 127, 255, cv2.THRESH_BINARY)
+
+    cv2.imshow("Webcam",mask)
 
     if cv2.waitKey(1) == ord('q'):
         break
