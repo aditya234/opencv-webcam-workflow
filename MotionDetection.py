@@ -29,9 +29,17 @@ while True:
     last_frame = grey
     _, mask = cv2.threshold(absolute_diff, 15, 255, cv2.THRESH_BINARY)
 
-    dilated_mask = cv2.dilate(mask,None, iterations = 2)
+    # dilated_mask = cv2.dilate(mask,None, iterations = 2)
+    contours,_ = cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
-    cv2.imshow("Webcam", dilated_mask)
+    for contour in contours:
+        # means small movement
+        if cv2.contourArea(contour) < 2000:
+            continue
+        # means movement detected
+        x, y, width, height = cv2.boundingRect(contour)
+        cv2.rectangle(frame,(x,y),(x+width, y+height),(0,255,0),2)
+    cv2.imshow("Webcam", frame)
 
     if cv2.waitKey(1) == ord('q'):
         break
