@@ -29,7 +29,9 @@ while True:
     last_frame = grey
     _, mask = cv2.threshold(absolute_diff, 15, 255, cv2.THRESH_BINARY)
 
-    cv2.imshow("Webcam",mask)
+    dilated_mask = cv2.dilate(mask,None, iterations = 2)
+
+    cv2.imshow("Webcam", dilated_mask)
 
     if cv2.waitKey(1) == ord('q'):
         break
