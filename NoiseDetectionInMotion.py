@@ -1,19 +1,37 @@
 import cv2
 import numpy as np
+from collections import deque
+
 
 class BackgroundExtraction:
-    def __init__(self, height, width, scale):
-        self.last_frame = np.zeros((height//scale, width//scale), np.uint8)
-        self.new_frame = None
+    def __init__(self, width, height, scale, maxlen=10):
+        self.maxlen = maxlen
+        self.width = width // scale
+        self.height = height // scale
+        self.buffer = deque(maxlen=maxlen)
+        self.background = None
 
-    def update_frame(self,frame):
-        self.new_frame = frame
+    def calculate_background(self):
+        self.background = np.zeros((self.height, self.width), dtype='float32')
+        for item in self.buffer:
+            self.background += item
+        self.background /= len(self.buffer)
+
+    def update_background(self, old_frame, new_frame):
+        self.background -= old_frame / self.maxlen
+        self.background += new_frame / self.maxlen
+
+    def update_frame(self, frame):
+        if len(self.buffer) < self.maxlen:
+            self.buffer.append(frame)
+            self.calculate_background()
+        else:
+            old_frame = self.buffer.popleft()
+            self.buffer.append(frame)
+            self.update_background(old_frame, frame)
 
     def get_background(self):
-        background = self.last_frame
-        self.last_frame = self.new_frame
-        return background
-
+        return self.background.astype('uint8')
 
 cap = cv2.VideoCapture(0)
 
@@ -28,7 +46,7 @@ scale = 2
 height = 720
 width = 1280
 
-bg_buffer = BackgroundExtraction(width=width,height=height,scale=scale)
+bg_buffer = BackgroundExtraction(width=width,height=height,scale=scale, maxlen=30)
 
 while True:
     # reading, resizing and fliping the frame
